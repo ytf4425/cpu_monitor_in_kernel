@@ -42,7 +42,7 @@ static ssize_t proc_read_cpu_threshold(struct file *file, char __user *buffer,
     sprintf(str, "CPU %d threshold: %lld %%.\n", cpuid, alert_threshold[cpuid]);
     strcat(sbuff, str);
   }
-  sprintf(str, "CPU %d (avaerage usage) threshold: %lld %%.\n", cpuid,
+  sprintf(str, "CPU %d (average usage) threshold: %lld %%.\n", cpuid,
           alert_threshold[cpuid]);
   strcat(sbuff, str);
 

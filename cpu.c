@@ -36,15 +36,15 @@ static inline void timer_task(struct timer_list *arg) {
     }
   }
 
-  // for avarage CPU usage
+  // for average CPU usage
   usage_i = Platform_setCPUValues(i);
   if (alert_threshold[i] != 0 && usage_i > alert_threshold[i]) {
     printk(
         KERN_WARNING
-        "WARNING: avarage CPU usage: %llu, larger than alert threshold %llu!",
+        "WARNING: average CPU usage: %llu, larger than alert threshold %llu!",
         usage_i, alert_threshold[i]);
   } else {
-    printk(KERN_INFO "avarage CPU usage: %llu", usage_i);
+    printk(KERN_INFO "average CPU usage: %llu", usage_i);
   }
   /* Kernel Timer restart */
   mod_timer(&timer, jiffies + msecs_to_jiffies(500));
