@@ -36,7 +36,11 @@ void proc_exit(void) { remove_proc_entry(PROCFS_NAME, NULL); }
 static ssize_t proc_read_cpu_threshold(struct file *file, char __user *buffer,
                                        size_t count, loff_t *f_pos) {
   char str[50] = "";
-  int cpuid;
+  int cpuid, max_cpuid;
+
+  max_cpuid = MAX_BUFF_SIZE / 50 >= num_online_cpus() + 1
+                  ? num_online_cpus()
+                  : MAX_BUFF_SIZE / 50 - 1;
   strcpy(sbuff, "");
   for (cpuid = 0; cpuid < num_online_cpus(); cpuid++) {
     sprintf(str, "CPU %d threshold: %lld %%.\n", cpuid, alert_threshold[cpuid]);
