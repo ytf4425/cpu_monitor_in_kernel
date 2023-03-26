@@ -12,6 +12,7 @@
 
 extern CPUData *cpus;
 extern u64 *alert_threshold;
+static char sbuff[MAX_BUFF_SIZE];
 
 static ssize_t proc_read_cpu_threshold(struct file *file, char __user *buffer,
                                        size_t count, loff_t *f_pos);
@@ -34,9 +35,9 @@ void proc_exit(void) { remove_proc_entry(PROCFS_NAME, NULL); }
 
 static ssize_t proc_read_cpu_threshold(struct file *file, char __user *buffer,
                                        size_t count, loff_t *f_pos) {
-  char sbuff[500] = "";
-  char str[40] = "";
+  char str[50] = "";
   int cpuid;
+  strcpy(sbuff, "");
   for (cpuid = 0; cpuid < num_online_cpus(); cpuid++) {
     sprintf(str, "CPU %d threshold: %lld %%.\n", cpuid, alert_threshold[cpuid]);
     strcat(sbuff, str);
@@ -61,15 +62,15 @@ static ssize_t proc_write_cpu_threshold(struct file *file,
                                         const char __user *buffer, size_t count,
                                         loff_t *f_pos) {
   int cpuid, cpu_threshold;
-  char sbuff[20] = "";
+  char str[20] = "";
   count = count < MAX_BUFF_SIZE ? count : MAX_BUFF_SIZE;
 
-  if (copy_from_user(sbuff, buffer, count)) { // error
+  if (copy_from_user(str, buffer, count)) { // error
     printk(KERN_INFO "[cpu_monitor_procfs]: copy_from_user() error!\n");
     return -EFAULT;
   }
 
-  sscanf(sbuff, "%d %d", &cpuid, &cpu_threshold);
+  sscanf(str, "%d %d", &cpuid, &cpu_threshold);
   if (cpuid >= 0 && cpuid <= num_online_cpus() && cpu_threshold <= 100 &&
       cpu_threshold >= 0)
     alert_threshold[cpuid] = cpu_threshold;
